@@ -4,6 +4,12 @@ const loadLessons = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all").then(res => res.json()).then(json => displayLesson(json));
 }
 
+function pronounceWord(word) {
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "en-EN"; // English
+    window.speechSynthesis.speak(utterance);
+}
+
 const displayLesson = (lesson) => {
     // console.log(lesson.data);
 
@@ -86,7 +92,7 @@ const displayLevelWord = (words) => {
             <div class="text-2xl font-medium font-bangla">"${words[i].meaning ? words[i].meaning : "no meaning found"} / ${words[i].pronunciation ? words[i].pronunciation : "no pron found"}"</div>
             <div class="flex justify-between items-center">
                 <button onClick="loadWordDetail(${words[i].id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF90]"><i class="fa-solid fa-circle-info"></i></button>
-                <button class="btn  bg-[#1A91FF10] hover:bg-[#1A91FF90]"><i class="fa-solid fa-volume-low"></i></button>
+                <button onClick="pronounceWord('${words[i].word}')" class="btn  bg-[#1A91FF10] hover:bg-[#1A91FF90]"><i class="fa-solid fa-volume-low"></i></button>
             </div>
         </div>
         `;
