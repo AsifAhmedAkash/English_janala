@@ -29,8 +29,21 @@ const removeActive = () => {
     });
 }
 
+const manageSpinner = (status) => {
+    if (status == true) {
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("word-container").classList.add("hidden");
+
+    } else {
+        document.getElementById("spinner").classList.add("hidden");
+        document.getElementById("word-container").classList.remove("hidden");
+
+    }
+}
+
 const loadLevelWord = (id) => {
-    console.log(id);
+    manageSpinner(true);
+    // console.log(id);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     // console.log(url);
 
@@ -47,6 +60,7 @@ const loadLevelWord = (id) => {
 
 const displayLevelWord = (words) => {
     // console.log(words);
+
     const wordContainer = document.getElementById("word-container");
     wordContainer.innerHTML = "";
 
@@ -58,6 +72,7 @@ const displayLevelWord = (words) => {
             <p class="text-xl font-medium text-gray-400">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</p>
             <h2 class=" font-bold text-4xl">নেক্সট Lesson এ যান</h2>
         </div>`
+        manageSpinner(false);
         return;
     }
 
@@ -76,7 +91,8 @@ const displayLevelWord = (words) => {
         </div>
         `;
         wordContainer.append(card);
-    }
+    };
+    manageSpinner(false);
 }
 
 const loadWordDetail = async (id) => {
@@ -86,32 +102,42 @@ const loadWordDetail = async (id) => {
     const details = await res.json();
 
     displayWordDetails(details);
-    my_modal_5.showModal();
+    // word_modal.showModal();
 }
 
 const displayWordDetails = (word) => {
+
+    console.log(word);
     const detailsBox = document.getElementById("details-container");
     detailsBox.innerHTML = `
-<div class="">
-                    <h2 class="text-2xl font-bold">${word.word} (<i class="fa-solid fa-microphone-lines"></i> : ${word.pronunciation})</h2>
+                <div class="">
+                    <h2 class="text-2xl font-bold">${word.data.word} (<i class="fa-solid fa-microphone-lines"></i> : ${word.data.pronunciation})</h2>
                 </div>
                 <div class="">
                     <h2 class="font-bold">Meaning</h2>
-                    <p>"${word.meaning}"</p>
+                    <p>"${word.data.meaning}"</p>
                 </div>
                 <div class="">
                     <h2 class="font-bold">Example</h2>
-                    <p>${word.sentence}</p>
+                    <p>${word.data.sentence}</p>
                 </div>
                 <div class="">
                     <h2 class="font-bold">Synonym</h2>
-                    <span class="btn">Syn1</span>
-                    <span class="btn">Syn1</span>
-                    <span class="btn">Syn1</span>
+                <div class="">
+                    ${createElements(word.data.synonyms)}
+                </div>
                 </div>
     `;
 
     document.getElementById("word_modal").showModal();
 };
+
+const createElements = (arr) => {
+    const htmlElemts = arr.map((el) => `<span class="btn">${el}</span>`);
+
+    return (htmlElemts.join(" "));
+}
+
+
 
 loadLessons();
